@@ -7,10 +7,13 @@ import {
   Stepper,
   PinInput,
   TextInput,
-  NativeSelect
+  NativeSelect,
+  Center
 } from "@mantine/core";
 
-interface SetupModalProps {}
+import Preferences from "../Preferences";
+
+import EditorPrefs from "../../App"
 
 /**
  * TODO List:
@@ -19,15 +22,11 @@ interface SetupModalProps {}
  *  - Make sure PIN is filled out
  *  - Make sure username matches specs (?)
  *  - If server says account exists and pin isn't valid, show an error.
- * Actually Store Preferences
- *  - Local storage?
  * Get the list of languages available, and use that.
  *  - Manually listing every language is dumb.
- * Use ComboBox instead of NativeSelect
- *  - Add language icons
  */
 
-export default function SetupModal(props: SetupModalProps) {
+export default function SetupModal(props: any) {
   const [opened, { open, close }] = useDisclosure(true);
 
   const [step, setStep] = useState(0);
@@ -38,8 +37,8 @@ export default function SetupModal(props: SetupModalProps) {
     setStep((current) => (current > 0 ? current - 1 : current));
 
   return (
-    <Modal opened={opened} onClose={close} title="Setup">
-      <Stepper active={step} onStepClick={setStep}>
+    <Modal opened={opened} onClose={() => { }} title="Setup" withCloseButton={false} centered className="no-hscroll">
+      <Stepper active={step} onStepClick={setStep} allowNextStepsSelect={false} orientation="vertical">
         <Stepper.Step
           label="Create Account"
           description="This will probably not be used again."
@@ -56,28 +55,11 @@ export default function SetupModal(props: SetupModalProps) {
           label="Preferences"
           description="Select your preferences."
         >
-          <b>Select Language</b>
-          <br />
-          <NativeSelect
-            data={[
-              "Python 3",
-              "JavaScript",
-              "Java",
-              "C",
-              "C#",
-              "C++",
-              "Ruby",
-              "Haskell",
-              "etc, etc, etc"
-            ]}
-          />
+          <Preferences editorPrefs={props.editorPrefs} setEditorPrefs={props.setEditorPrefs}/>
         </Stepper.Step>
       </Stepper>
 
       <Group justify="center" mt="xl">
-        {/* <Button variant="default" onClick={prevStep}>
-          Back
-        </Button> */}
         <Button
           onClick={step == 2 ? close : nextStep}
           children={step == 2 ? "Close" : "Next"}
